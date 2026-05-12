@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>共享单词本 · Co-Sharing WordNote</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #4f46e5;
+      --primary-h: #4338ca;
+      --primary-l: #818cf8;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 14px;
+      --sh: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --sh-md: 0 4px 12px rgba(0,0,0,.1), 0 2px 4px rgba(0,0,0,.06);
+      --sh-lg: 0 20px 40px rgba(0,0,0,.12);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: var(--sh);
+    }
+    .header-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 20px;
+      padding: 0 24px; height: 64px;
+    }
+    .logo {
+      font-size: 18px; font-weight: 800; color: var(--primary);
+      white-space: nowrap; display: flex; align-items: center; gap: 8px;
+      letter-spacing: -.3px;
+    }
+    .logo span { font-size: 22px; }
+    .stats-bar {
+      display: flex; gap: 20px; flex: 1; min-width: 0;
+    }
+    .stat {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12.5px; color: var(--muted); white-space: nowrap;
+    }
+    .stat b { color: var(--primary); font-size: 15px; }
+    .live { display: flex; align-items: center; gap: 5px; }
+    .live-dot {
+      width: 7px; height: 7px; background: #22c55e;
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:.5; transform:scale(.7); }
+    }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .nick-wrap {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 22px; padding: 5px 14px;
+      transition: border-color .2s;
+    }
+    .nick-wrap:focus-within { border-color: var(--primary); }
+    .nick-icon { font-size: 13px; }
+    .nick-input {
+      border: none; background: transparent; outline: none;
+      font-size: 13px; width: 90px; color: var(--text);
+    }
+    .btn-add {
+      background: var(--primary); color: white;
+      border: none; border-radius: 22px; padding: 9px 20px;
+      font-size: 13.5px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+      transition: background .15s, transform .1s, box-shadow .15s;
+      box-shadow: 0 2px 8px rgba(79,70,229,.3);
+      white-space: nowrap;
+    }
+    .btn-add:hover { background: var(--primary-h); box-shadow: 0 4px 12px rgba(79,70,229,.4); }
+    .btn-add:active { transform: scale(.97); }
+
+    /* ── Main ── */
+    .main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    /* filter bar */
+    .filter-bar {
+      display: flex; gap: 8px; margin-bottom: 22px;
+      flex-wrap: wrap; align-items: center;
+    }
+    .filter-label { font-size: 12px; color: var(--muted); margin-right: 2px; }
+    .ftag {
+      padding: 5px 14px; border-radius: 20px;
+      border: 1.5px solid var(--border); background: white;
+      font-size: 12.5px; cursor: pointer;
+      color: var(--muted); transition: all .15s;
+    }
+    .ftag:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+    .ftag.active { background: var(--primary); border-color: var(--primary); color: white; font-weight: 600; }
+
+    /* grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+
+    /* card */
+    .card {
+      background: white; border-radius: var(--radius);
+      border: 1px solid var(--border); box-shadow: var(--sh);
+      overflow: hidden; transition: box-shadow .2s, transform .2s;
+      animation: fadeUp .3s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(12px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+    .card:hover { box-shadow: var(--sh-md); transform: translateY(-2px); }
+    .card-body { padding: 18px 20px 14px; }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .card-word { font-size: 20px; font-weight: 800; line-height: 1.2; color: var(--text); }
+    .card-tag {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 10px; white-space: nowrap; margin-left: 8px; flex-shrink: 0;
+    }
+    .card-def { font-size: 13.5px; color: var(--muted); line-height: 1.65; margin-bottom: 10px; }
+    .card-meta { font-size: 11.5px; color: #94a3b8; display: flex; gap: 12px; }
+
+    /* tag colors */
+    .tc0 { background:#dbeafe; color:#1d4ed8; }
+    .tc1 { background:#dcfce7; color:#15803d; }
+    .tc2 { background:#fef9c3; color:#a16207; }
+    .tc3 { background:#ede9fe; color:#6d28d9; }
+    .tc4 { background:#fee2e2; color:#b91c1c; }
+    .tc5 { background:#fce7f3; color:#be185d; }
+    .tc6 { background:#ffedd5; color:#c2410c; }
+    .tc7 { background:#ccfbf1; color:#0f766e; }
+    .tc-none { background:#f1f5f9; color:#475569; }
+
+    /* sections */
+    .section { border-top: 1px solid var(--border); }
+    .sec-hd {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 20px; cursor: pointer; user-select: none;
+      transition: background .15s;
+    }
+    .sec-hd:hover { background: var(--bg); }
+    .sec-title { font-size: 12px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+    .sec-cnt {
+      background: var(--bg); border-radius: 10px;
+      padding: 1px 8px; font-size: 11px; color: var(--muted); font-weight: 600;
+    }
+    .sec-arr { font-size: 10px; color: #94a3b8; transition: transform .2s; }
+    .sec-arr.open { transform: rotate(180deg); }
+    .sec-bd { display: none; padding: 4px 20px 14px; }
+    .sec-bd.open { display: block; }
+    .sec-item {
+      background: var(--bg); border-radius: 9px;
+      padding: 9px 12px; margin-bottom: 7px;
+      font-size: 13px; line-height: 1.55;
+    }
+    .sec-item:last-of-type { margin-bottom: 0; }
+    .item-meta { font-size: 11px; color: #94a3b8; margin-top: 4px; display: flex; gap: 10px; }
+    .item-meta .author { color: var(--primary-l); font-weight: 600; }
+    .inp-row { display: flex; gap: 8px; margin-top: 10px; }
+    .sec-inp {
+      flex: 1; border: 1.5px solid var(--border); border-radius: 9px;
+      padding: 8px 12px; font-size: 13px; outline: none;
+      transition: border-color .2s; font-family: inherit; resize: none;
+      background: white; line-height: 1.4; min-height: 36px;
+    }
+    .sec-inp:focus { border-color: var(--primary); }
+    .btn-send {
+      background: var(--primary); color: white; border: none;
+      border-radius: 9px; padding: 8px 14px; font-size: 13px;
+      font-weight: 600; cursor: pointer; white-space: nowrap;
+      align-self: flex-end; transition: background .15s;
+    }
+    .btn-send:hover { background: var(--primary-h); }
+
+    /* empty / loading */
+    .placeholder {
+      text-align: center; padding: 80px 20px;
+      color: var(--muted); grid-column: 1/-1;
+    }
+    .ph-icon { font-size: 60px; margin-bottom: 14px; }
+    .ph-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .ph-sub { font-size: 13px; }
+    .spinner {
+      width: 34px; height: 34px; margin: 0 auto 14px;
+      border: 3px solid var(--border); border-top-color: var(--primary);
+      border-radius: 50%; animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* modal */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(15,23,42,.45);
+      backdrop-filter: blur(6px); z-index: 200;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: white; border-radius: 18px; padding: 28px 28px 24px;
+      width: 100%; max-width: 460px; box-shadow: var(--sh-lg);
+      transform: scale(.96) translateY(8px); transition: transform .2s;
+    }
+    .overlay.open .modal { transform: scale(1) translateY(0); }
+    .modal-title { font-size: 17px; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .fg { margin-bottom: 14px; }
+    .flabel { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: .4px; }
+    .finput {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 10px 14px; font-size: 14px; outline: none;
+      transition: border-color .2s, box-shadow .2s; font-family: inherit;
+    }
+    .finput:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,70,229,.12);
+    }
+    .fta { min-height: 78px; resize: vertical; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-cancel {
+      flex: 1; background: var(--bg); color: var(--muted);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-cancel:hover { background: var(--border); }
+    .btn-ok {
+      flex: 2; background: var(--primary); color: white; border: none;
+      border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background .15s; letter-spacing: .2px;
+    }
+    .btn-ok:hover { background: var(--primary-h); }
+    .btn-ok:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* toast */
+    .toasts {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      z-index: 300; display: flex; flex-direction: column; gap: 8px;
+      pointer-events: none; align-items: center;
+    }
+    .toast {
+      background: #1e293b; color: white; padding: 9px 20px;
+      border-radius: 20px; font-size: 13px; box-shadow: var(--sh-md);
+      animation: tIn .25s ease, tOut .25s ease 2.75s forwards;
+      white-space: nowrap;
+    }
+    @keyframes tIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes tOut { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
+
+    /* responsive */
+    @media (max-width: 640px) {
+      .header-inner { flex-wrap: wrap; height: auto; padding: 12px 16px; gap: 10px; }
+      .stats-bar { order: 3; width: 100%; gap: 14px; }
+      .main { padding: 14px; }
+      .grid { grid-template-columns: 1fr; }
+      .logo { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo"><span>📖</span>共享单词本</div>
+
+    <div class="stats-bar">
+      <div class="stat live"><div class="live-dot"></div>实时同步</div>
+      <div class="stat">单词&nbsp;<b id="sw">–</b></div>
+      <div class="stat">补充&nbsp;<b id="ss">–</b></div>
+      <div class="stat">留言&nbsp;<b id="sc">–</b></div>
+    </div>
+
+    <div class="header-right">
+      <div class="nick-wrap">
+        <span class="nick-icon">👤</span>
+        <input class="nick-input" id="nick" type="text" placeholder="输入昵称" maxlength="12">
+      </div>
+      <button class="btn-add" id="btn-add">＋ 添加单词</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="filter-bar" id="filter-bar">
+    <span class="filter-label">筛选：</span>
+    <button class="ftag active" data-tag="all">全部</button>
+  </div>
+  <div class="grid" id="grid">
+    <div class="placeholder">
+      <div class="spinner"></div>
+      正在连接数据库…
+    </div>
+  </div>
+</main>
+
+<!-- Add Word Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-title">📝 添加新单词</div>
+    <div class="fg">
+      <label class="flabel">单词 / 知识点 <span style="color:#ef4444">*</span></label>
+      <input class="finput" id="iw" type="text" placeholder="如：abandon、牛顿第一定律、async/await">
+    </div>
+    <div class="fg">
+      <label class="flabel">分类标签</label>
+      <input class="finput" id="it" type="text" placeholder="如：四级、物理、编程（可自定义）">
+    </div>
+    <div class="fg">
+      <label class="flabel">释义 / 备注</label>
+      <textarea class="finput fta" id="id" placeholder="填写释义、解释或备注信息…"></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="btn-cancel">取消</button>
+      <button class="btn-ok" id="btn-ok">添加到单词本</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    apiKey: "AIzaSyDQCMpEeUsbg2ld4La3iHvzFKQZQCavm0k",
+    authDomain: "co-sharing-wordnote.firebaseapp.com",
+    databaseURL: "https://co-sharing-wordnote-default-rtdb.firebaseio.com",
+    projectId: "co-sharing-wordnote",
+    messagingSenderId: "63640681458",
+    appId: "1:63640681458:web:8586a9cd864f9ee0c7096b"
+  });
+  const db = firebase.database();
+  const wordsRef = db.ref('words');
+
+  /* ── Nickname ── */
+  const nickEl = document.getElementById('nick');
+  nickEl.value = localStorage.getItem('nick') || '';
+  nickEl.addEventListener('input', () => localStorage.setItem('nick', nickEl.value.trim()));
+  const getNick = () => nickEl.value.trim() || '匿名';
+
+  /* ── Tag colors ── */
+  const tagColorMap = {};
+  let colorIdx = 0;
+  function tagColor(t) {
+    if (!t) return 'tc-none';
+    if (!tagColorMap[t]) tagColorMap[t] = 'tc' + (colorIdx++ % 8);
+    return tagColorMap[t];
+  }
+
+  /* ── State ── */
+  let allWords = {};
+  let activeFilter = 'all';
+  const openSections = new Set(); // "id-s" or "id-c"
+
+  /* ── Firebase listener ── */
+  wordsRef.on('value', snap => {
+    allWords = snap.val() || {};
+    renderStats();
+    renderFilters();
+    renderCards();
+  });
+
+  function renderStats() {
+    let w = 0, s = 0, c = 0;
+    for (const d of Object.values(allWords)) {
+      w++;
+      s += d.supplements ? Object.keys(d.supplements).length : 0;
+      c += d.comments ? Object.keys(d.comments).length : 0;
+    }
+    document.getElementById('sw').textContent = w;
+    document.getElementById('ss').textContent = s;
+    document.getElementById('sc').textContent = c;
+  }
+
+  function renderFilters() {
+    const tags = new Set(['all']);
+    for (const d of Object.values(allWords)) if (d.tag) tags.add(d.tag);
+
+    const bar = document.getElementById('filter-bar');
+    bar.innerHTML = '<span class="filter-label">筛选：</span>';
+    for (const tag of tags) {
+      const btn = document.createElement('button');
+      btn.className = 'ftag' + (tag === activeFilter ? ' active' : '');
+      btn.dataset.tag = tag;
+      btn.textContent = tag === 'all' ? '全部' : tag;
+      btn.onclick = () => { activeFilter = tag; renderFilters(); renderCards(); };
+      bar.appendChild(btn);
+    }
+  }
+
+  function renderCards() {
+    const grid = document.getElementById('grid');
+    const entries = Object.entries(allWords).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+    const filtered = activeFilter === 'all' ? entries : entries.filter(([, d]) => d.tag === activeFilter);
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="placeholder">
+        <div class="ph-icon">📭</div>
+        <div class="ph-title">${activeFilter === 'all' ? '单词本还是空的' : '该分类暂无单词'}</div>
+        <div class="ph-sub">${activeFilter === 'all' ? '点击「添加单词」开始共享你的知识' : '切换其他分类或添加新单词'}</div>
+      </div>`;
+      return;
+    }
+
+    // Preserve in-progress inputs before re-render
+    const saved = {};
+    grid.querySelectorAll('.card').forEach(card => {
+      const id = card.dataset.id;
+      if (!id) return;
+      const [sInp, cInp] = card.querySelectorAll('.sec-inp');
+      saved[id] = {
+        sOpen: openSections.has(id + '-s'),
+        cOpen: openSections.has(id + '-c'),
+        sVal: sInp ? sInp.value : '',
+        cVal: cInp ? cInp.value : '',
+      };
+    });
+
+    grid.innerHTML = '';
+    filtered.forEach(([id, d], i) => {
+      const card = buildCard(id, d);
+      card.style.animationDelay = Math.min(i * 30, 200) + 'ms';
+      grid.appendChild(card);
+      if (saved[id]) restoreCard(card, saved[id]);
+    });
+  }
+
+  function restoreCard(card, st) {
+    if (st.sOpen) {
+      const bd = card.querySelector('.sec-bd-s');
+      const arr = card.querySelector('.sec-arr-s');
+      if (bd) { bd.classList.add('open'); arr && arr.classList.add('open'); }
+    }
+    if (st.cOpen) {
+      const bd = card.querySelector('.sec-bd-c');
+      const arr = card.querySelector('.sec-arr-c');
+      if (bd) { bd.classList.add('open'); arr && arr.classList.add('open'); }
+    }
+    const [sInp, cInp] = card.querySelectorAll('.sec-inp');
+    if (sInp && st.sVal) sInp.value = st.sVal;
+    if (cInp && st.cVal) cInp.value = st.cVal;
+  }
+
+  function buildCard(id, d) {
+    const supps = d.supplements ? Object.entries(d.supplements).sort((a,b) => a[1].timestamp - b[1].timestamp) : [];
+    const comms = d.comments ? Object.entries(d.comments).sort((a,b) => a[1].timestamp - b[1].timestamp) : [];
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.id = id;
+
+    card.innerHTML = `
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-word">${esc(d.word)}</div>
+          ${d.tag ? `<span class="card-tag ${tagColor(d.tag)}">${esc(d.tag)}</span>` : ''}
+        </div>
+        ${d.definition ? `<div class="card-def">${esc(d.definition)}</div>` : ''}
+        <div class="card-meta">
+          <span>👤 ${esc(d.addedBy || '匿名')}</span>
+          <span>🕐 ${ago(d.timestamp)}</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sec-hd" data-type="s" data-id="${id}">
+          <div class="sec-title">💡 补充栏 <span class="sec-cnt">${supps.length}</span></div>
+          <span class="sec-arr sec-arr-s">▼</span>
+        </div>
+        <div class="sec-bd sec-bd-s">
+          ${supps.map(([,s]) => `
+            <div class="sec-item">${esc(s.content)}
+              <div class="item-meta"><span class="author">@${esc(s.addedBy||'匿名')}</span><span>${ago(s.timestamp)}</span></div>
+            </div>`).join('')}
+          <div class="inp-row">
+            <textarea class="sec-inp" placeholder="添加例句、用法、近义词…"></textarea>
+            <button class="btn-send" data-type="supp" data-id="${id}">补充</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sec-hd" data-type="c" data-id="${id}">
+          <div class="sec-title">💬 留言板 <span class="sec-cnt">${comms.length}</span></div>
+          <span class="sec-arr sec-arr-c">▼</span>
+        </div>
+        <div class="sec-bd sec-bd-c">
+          ${comms.map(([,c]) => `
+            <div class="sec-item">${esc(c.content)}
+              <div class="item-meta"><span class="author">@${esc(c.addedBy||'匿名')}</span><span>${ago(c.timestamp)}</span></div>
+            </div>`).join('')}
+          <div class="inp-row">
+            <textarea class="sec-inp" placeholder="提问、讨论、互动…"></textarea>
+            <button class="btn-send" data-type="comm" data-id="${id}">留言</button>
+          </div>
+        </div>
+      </div>`;
+
+    // Toggle sections
+    card.querySelectorAll('.sec-hd').forEach(hd => {
+      hd.addEventListener('click', () => {
+        const t = hd.dataset.type;
+        const bd = card.querySelector('.sec-bd-' + t);
+        const arr = card.querySelector('.sec-arr-' + t);
+        const key = id + '-' + t;
+        bd.classList.toggle('open');
+        arr.classList.toggle('open');
+        openSections[bd.classList.contains('open') ? 'add' : 'delete'](key);
+      });
+    });
+
+    // Send buttons
+    card.querySelectorAll('.btn-send').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const inp = btn.previousElementSibling;
+        const content = inp.value.trim();
+        if (!content) { toast('请输入内容'); return; }
+        const path = btn.dataset.type === 'supp' ? `words/${id}/supplements` : `words/${id}/comments`;
+        const label = btn.dataset.type === 'supp' ? '补充' : '留言';
+        btn.disabled = true;
+        inp.value = '';
+        db.ref(path).push({ content, addedBy: getNick(), timestamp: Date.now() })
+          .then(() => toast(label + '已发送 ✓'))
+          .catch(() => { toast('发送失败，请检查网络'); inp.value = content; })
+          .finally(() => btn.disabled = false);
+      });
+    });
+
+    return card;
+  }
+
+  /* ── Modal ── */
+  const overlay = document.getElementById('overlay');
+  document.getElementById('btn-add').onclick = () => {
+    overlay.classList.add('open');
+    document.getElementById('iw').focus();
+  };
+  document.getElementById('btn-cancel').onclick = closeModal;
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  document.getElementById('iw').addEventListener('keydown', e => { if (e.key === 'Enter') submitWord(); });
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    ['iw','it','id'].forEach(x => document.getElementById(x).value = '');
+  }
+
+  document.getElementById('btn-ok').onclick = submitWord;
+
+  function submitWord() {
+    const word = document.getElementById('iw').value.trim();
+    const tag  = document.getElementById('it').value.trim();
+    const def  = document.getElementById('id').value.trim();
+    if (!word) { toast('请输入单词或知识点'); document.getElementById('iw').focus(); return; }
+    const btn = document.getElementById('btn-ok');
+    btn.disabled = true; btn.textContent = '添加中…';
+    wordsRef.push({ word, tag: tag||null, definition: def||null, addedBy: getNick(), timestamp: Date.now() })
+      .then(() => { closeModal(); toast('单词已添加 ✓'); })
+      .catch(() => toast('添加失败，请检查 Firebase 规则'))
+      .finally(() => { btn.disabled = false; btn.textContent = '添加到单词本'; });
+  }
+
+  /* ── Helpers ── */
+  function ago(ts) {
+    if (!ts) return '未知时间';
+    const d = Date.now() - ts;
+    if (d < 60000) return '刚刚';
+    if (d < 3600000) return ~~(d/60000) + ' 分钟前';
+    if (d < 86400000) return ~~(d/3600000) + ' 小时前';
+    return ~~(d/86400000) + ' 天前';
+  }
+
+  function esc(s) {
+    if (!s) return '';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  function toast(msg) {
+    const c = document.getElementById('toasts');
+    const el = document.createElement('div');
+    el.className = 'toast'; el.textContent = msg;
+    c.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+</script>
+</body>
+</html>
