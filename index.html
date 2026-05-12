@@ -12,7 +12,6 @@
       --primary-h: #4338ca;
       --primary-l: #818cf8;
       --bg: #f8fafc;
-      --card: #ffffff;
       --text: #1e293b;
       --muted: #64748b;
       --border: #e2e8f0;
@@ -24,67 +23,39 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+      background: var(--bg); color: var(--text); min-height: 100vh;
     }
 
     /* ── Header ── */
-    .header {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 100;
-      box-shadow: var(--sh);
-    }
-    .header-inner {
-      max-width: 1200px; margin: 0 auto;
-      display: flex; align-items: center; gap: 20px;
-      padding: 0 24px; height: 64px;
-    }
-    .logo {
-      font-size: 18px; font-weight: 800; color: var(--primary);
-      white-space: nowrap; display: flex; align-items: center; gap: 8px;
-      letter-spacing: -.3px;
-    }
+    .header { background: white; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: var(--sh); }
+    .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 14px; padding: 0 24px; height: 64px; }
+    .logo { font-size: 18px; font-weight: 800; color: var(--primary); white-space: nowrap; display: flex; align-items: center; gap: 8px; letter-spacing: -.3px; }
     .logo span { font-size: 22px; }
-    .stats-bar {
-      display: flex; gap: 20px; flex: 1; min-width: 0;
-    }
-    .stat {
-      display: flex; align-items: center; gap: 5px;
-      font-size: 12.5px; color: var(--muted); white-space: nowrap;
-    }
+    .stats-bar { display: flex; gap: 16px; flex: 1; min-width: 0; }
+    .stat { display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
     .stat b { color: var(--primary); font-size: 15px; }
     .live { display: flex; align-items: center; gap: 5px; }
-    .live-dot {
-      width: 7px; height: 7px; background: #22c55e;
-      border-radius: 50%; animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50% { opacity:.5; transform:scale(.7); }
-    }
-    .header-right { display: flex; align-items: center; gap: 10px; }
-    .nick-wrap {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--bg); border: 1.5px solid var(--border);
-      border-radius: 22px; padding: 5px 14px;
-      transition: border-color .2s;
-    }
+    .live-dot { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(.7);} }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .nick-wrap { display: flex; align-items: center; gap: 6px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 22px; padding: 5px 14px; transition: border-color .2s; }
     .nick-wrap:focus-within { border-color: var(--primary); }
-    .nick-icon { font-size: 13px; }
-    .nick-input {
-      border: none; background: transparent; outline: none;
-      font-size: 13px; width: 90px; color: var(--text);
+    .nick-input { border: none; background: transparent; outline: none; font-size: 13px; width: 76px; color: var(--text); }
+
+    .btn-outline {
+      background: white; color: var(--muted); border: 1.5px solid var(--border); border-radius: 22px;
+      padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 5px; transition: all .15s; white-space: nowrap;
     }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-outline.active { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+    .btn-outline.active:hover { background: #fde68a; }
+
     .btn-add {
-      background: var(--primary); color: white;
-      border: none; border-radius: 22px; padding: 9px 20px;
-      font-size: 13.5px; font-weight: 600; cursor: pointer;
-      display: flex; align-items: center; gap: 5px;
+      background: var(--primary); color: white; border: none; border-radius: 22px; padding: 9px 18px;
+      font-size: 13.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px;
       transition: background .15s, transform .1s, box-shadow .15s;
-      box-shadow: 0 2px 8px rgba(79,70,229,.3);
-      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(79,70,229,.3); white-space: nowrap;
     }
     .btn-add:hover { background: var(--primary-h); box-shadow: 0 4px 12px rgba(79,70,229,.4); }
     .btn-add:active { transform: scale(.97); }
@@ -92,182 +63,191 @@
     /* ── Main ── */
     .main { max-width: 1200px; margin: 0 auto; padding: 24px; }
 
-    /* filter bar */
-    .filter-bar {
-      display: flex; gap: 8px; margin-bottom: 22px;
-      flex-wrap: wrap; align-items: center;
+    /* ── Daily Word Banner ── */
+    .daily-wrap { margin-bottom: 22px; }
+    .daily-card {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      border-radius: var(--radius); padding: 20px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      color: white; box-shadow: 0 4px 20px rgba(79,70,229,.35);
     }
+    .daily-left { flex: 1; min-width: 0; }
+    .daily-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; opacity: .7; margin-bottom: 10px; text-transform: uppercase; }
+    .daily-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+    .daily-word { font-size: 26px; font-weight: 900; line-height: 1.1; }
+    .daily-tag { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 10px; background: rgba(255,255,255,.2); flex-shrink: 0; }
+    .daily-def { font-size: 14px; opacity: .85; line-height: 1.6; }
+    .daily-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .daily-btn {
+      width: 40px; height: 40px; border-radius: 12px; border: none;
+      background: rgba(255,255,255,.15); cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center; transition: background .15s;
+    }
+    .daily-btn:hover { background: rgba(255,255,255,.28); }
+
+    /* ── Test Mode Banner ── */
+    .test-banner {
+      display: none; background: #fffbeb; border: 1.5px solid #fcd34d;
+      border-radius: 10px; padding: 10px 18px; margin-bottom: 18px;
+      font-size: 13px; font-weight: 600; color: #92400e;
+      display: none; align-items: center; gap: 10px;
+    }
+    .test-banner.show { display: flex; }
+    .test-progress { margin-left: auto; font-size: 12px; color: #b45309; }
+
+    /* ── Filter ── */
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; align-items: center; }
     .filter-label { font-size: 12px; color: var(--muted); margin-right: 2px; }
-    .ftag {
-      padding: 5px 14px; border-radius: 20px;
-      border: 1.5px solid var(--border); background: white;
-      font-size: 12.5px; cursor: pointer;
-      color: var(--muted); transition: all .15s;
-    }
+    .ftag { padding: 5px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-size: 12.5px; cursor: pointer; color: var(--muted); transition: all .15s; }
     .ftag:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
     .ftag.active { background: var(--primary); border-color: var(--primary); color: white; font-weight: 600; }
 
-    /* grid */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 18px;
-    }
+    /* ── Grid ── */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
 
-    /* card */
-    .card {
-      background: white; border-radius: var(--radius);
-      border: 1px solid var(--border); box-shadow: var(--sh);
-      overflow: hidden; transition: box-shadow .2s, transform .2s;
-      animation: fadeUp .3s ease both;
-    }
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(12px); }
-      to { opacity:1; transform:translateY(0); }
-    }
+    /* ── Card ── */
+    .card { background: white; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--sh); overflow: hidden; transition: box-shadow .2s, transform .2s; animation: fadeUp .3s ease both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
     .card:hover { box-shadow: var(--sh-md); transform: translateY(-2px); }
     .card-body { padding: 18px 20px 14px; }
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
     .card-word { font-size: 20px; font-weight: 800; line-height: 1.2; color: var(--text); }
-    .card-tag {
-      font-size: 11px; font-weight: 700; padding: 3px 10px;
-      border-radius: 10px; white-space: nowrap; margin-left: 8px; flex-shrink: 0;
-    }
-    .card-def { font-size: 13.5px; color: var(--muted); line-height: 1.65; margin-bottom: 10px; }
+    .card-top-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: 8px; }
+    .card-tag { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 10px; white-space: nowrap; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
     .card-meta { font-size: 11.5px; color: #94a3b8; display: flex; gap: 12px; }
+    .card-actions { display: flex; gap: 2px; }
+
+    /* Icon buttons */
+    .btn-icon {
+      width: 28px; height: 28px; border-radius: 8px; border: none;
+      background: transparent; cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s; color: #94a3b8;
+    }
+    .btn-icon:hover { background: var(--bg); }
+    .btn-icon.edit:hover { color: var(--primary); }
+    .btn-icon.del:hover { color: #ef4444; background: #fef2f2; }
+    /* Speak button: hidden by default, show on card hover */
+    .btn-speak { opacity: 0; transition: opacity .15s, background .15s; }
+    .card:hover .btn-speak { opacity: 1; }
+    .btn-speak:hover { color: #0ea5e9 !important; background: #f0f9ff !important; }
+
+    /* ── Definition wrap (test mode) ── */
+    .def-wrap { position: relative; margin-bottom: 10px; }
+    .card-def { font-size: 13.5px; color: var(--muted); line-height: 1.65; transition: filter .35s; }
+    .def-hint {
+      display: none; position: absolute; inset: 0;
+      align-items: center; justify-content: center;
+      font-size: 12px; color: var(--muted); font-weight: 600;
+      gap: 5px; pointer-events: none; border-radius: 6px;
+      background: rgba(248,250,252,.6);
+    }
+    /* Test mode active styles */
+    body.test-mode .def-wrap { cursor: pointer; border-radius: 8px; }
+    body.test-mode .card-def { filter: blur(6px); user-select: none; }
+    body.test-mode .def-hint { display: flex; }
+    body.test-mode .card.revealed .card-def { filter: blur(0); }
+    body.test-mode .card.revealed .def-hint { display: none; }
+    /* Always show speak button in test mode */
+    body.test-mode .btn-speak { opacity: 1; }
 
     /* tag colors */
-    .tc0 { background:#dbeafe; color:#1d4ed8; }
-    .tc1 { background:#dcfce7; color:#15803d; }
-    .tc2 { background:#fef9c3; color:#a16207; }
-    .tc3 { background:#ede9fe; color:#6d28d9; }
-    .tc4 { background:#fee2e2; color:#b91c1c; }
-    .tc5 { background:#fce7f3; color:#be185d; }
-    .tc6 { background:#ffedd5; color:#c2410c; }
-    .tc7 { background:#ccfbf1; color:#0f766e; }
-    .tc-none { background:#f1f5f9; color:#475569; }
+    .tc0{background:#dbeafe;color:#1d4ed8;} .tc1{background:#dcfce7;color:#15803d;}
+    .tc2{background:#fef9c3;color:#a16207;} .tc3{background:#ede9fe;color:#6d28d9;}
+    .tc4{background:#fee2e2;color:#b91c1c;} .tc5{background:#fce7f3;color:#be185d;}
+    .tc6{background:#ffedd5;color:#c2410c;} .tc7{background:#ccfbf1;color:#0f766e;}
+    .tc-none{background:#f1f5f9;color:#475569;}
 
-    /* sections */
+    /* ── Sections ── */
     .section { border-top: 1px solid var(--border); }
-    .sec-hd {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 20px; cursor: pointer; user-select: none;
-      transition: background .15s;
-    }
+    .sec-hd { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; cursor: pointer; user-select: none; transition: background .15s; }
     .sec-hd:hover { background: var(--bg); }
     .sec-title { font-size: 12px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-    .sec-cnt {
-      background: var(--bg); border-radius: 10px;
-      padding: 1px 8px; font-size: 11px; color: var(--muted); font-weight: 600;
-    }
+    .sec-cnt { background: var(--bg); border-radius: 10px; padding: 1px 8px; font-size: 11px; color: var(--muted); font-weight: 600; }
     .sec-arr { font-size: 10px; color: #94a3b8; transition: transform .2s; }
     .sec-arr.open { transform: rotate(180deg); }
     .sec-bd { display: none; padding: 4px 20px 14px; }
     .sec-bd.open { display: block; }
-    .sec-item {
-      background: var(--bg); border-radius: 9px;
-      padding: 9px 12px; margin-bottom: 7px;
-      font-size: 13px; line-height: 1.55;
-    }
-    .sec-item:last-of-type { margin-bottom: 0; }
+    .sec-item { background: var(--bg); border-radius: 9px; padding: 9px 12px; margin-bottom: 7px; font-size: 13px; line-height: 1.55; }
     .item-meta { font-size: 11px; color: #94a3b8; margin-top: 4px; display: flex; gap: 10px; }
     .item-meta .author { color: var(--primary-l); font-weight: 600; }
     .inp-row { display: flex; gap: 8px; margin-top: 10px; }
-    .sec-inp {
-      flex: 1; border: 1.5px solid var(--border); border-radius: 9px;
-      padding: 8px 12px; font-size: 13px; outline: none;
-      transition: border-color .2s; font-family: inherit; resize: none;
-      background: white; line-height: 1.4; min-height: 36px;
-    }
+    .sec-inp { flex: 1; border: 1.5px solid var(--border); border-radius: 9px; padding: 8px 12px; font-size: 13px; outline: none; transition: border-color .2s; font-family: inherit; resize: none; background: white; line-height: 1.4; min-height: 36px; }
     .sec-inp:focus { border-color: var(--primary); }
-    .btn-send {
-      background: var(--primary); color: white; border: none;
-      border-radius: 9px; padding: 8px 14px; font-size: 13px;
-      font-weight: 600; cursor: pointer; white-space: nowrap;
-      align-self: flex-end; transition: background .15s;
-    }
+    .btn-send { background: var(--primary); color: white; border: none; border-radius: 9px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; align-self: flex-end; transition: background .15s; }
     .btn-send:hover { background: var(--primary-h); }
 
-    /* empty / loading */
-    .placeholder {
-      text-align: center; padding: 80px 20px;
-      color: var(--muted); grid-column: 1/-1;
-    }
+    /* ── Empty / Loading ── */
+    .placeholder { text-align: center; padding: 80px 20px; color: var(--muted); grid-column: 1/-1; }
     .ph-icon { font-size: 60px; margin-bottom: 14px; }
     .ph-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
     .ph-sub { font-size: 13px; }
-    .spinner {
-      width: 34px; height: 34px; margin: 0 auto 14px;
-      border: 3px solid var(--border); border-top-color: var(--primary);
-      border-radius: 50%; animation: spin .8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { width: 34px; height: 34px; margin: 0 auto 14px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg);} }
 
-    /* modal */
-    .overlay {
-      position: fixed; inset: 0; background: rgba(15,23,42,.45);
-      backdrop-filter: blur(6px); z-index: 200;
-      display: flex; align-items: center; justify-content: center; padding: 20px;
-      opacity: 0; pointer-events: none; transition: opacity .2s;
-    }
+    /* ── Modal ── */
+    .overlay { position: fixed; inset: 0; background: rgba(15,23,42,.45); backdrop-filter: blur(6px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
     .overlay.open { opacity: 1; pointer-events: all; }
-    .modal {
-      background: white; border-radius: 18px; padding: 28px 28px 24px;
-      width: 100%; max-width: 460px; box-shadow: var(--sh-lg);
-      transform: scale(.96) translateY(8px); transition: transform .2s;
-    }
+    .modal { background: white; border-radius: 18px; padding: 28px 28px 24px; width: 100%; max-width: 460px; box-shadow: var(--sh-lg); transform: scale(.96) translateY(8px); transition: transform .2s; }
     .overlay.open .modal { transform: scale(1) translateY(0); }
-    .modal-title { font-size: 17px; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .modal-title { font-size: 17px; font-weight: 800; margin-bottom: 20px; }
     .fg { margin-bottom: 14px; }
     .flabel { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: .4px; }
-    .finput {
-      width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
-      padding: 10px 14px; font-size: 14px; outline: none;
-      transition: border-color .2s, box-shadow .2s; font-family: inherit;
-    }
-    .finput:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79,70,229,.12);
-    }
+    .finput { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; outline: none; transition: border-color .2s, box-shadow .2s; font-family: inherit; }
+    .finput:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
     .fta { min-height: 78px; resize: vertical; }
     .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
-    .btn-cancel {
-      flex: 1; background: var(--bg); color: var(--muted);
-      border: 1.5px solid var(--border); border-radius: 10px;
-      padding: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
-      transition: background .15s;
-    }
+    .btn-cancel { flex: 1; background: var(--bg); color: var(--muted); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s; }
     .btn-cancel:hover { background: var(--border); }
-    .btn-ok {
-      flex: 2; background: var(--primary); color: white; border: none;
-      border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 700;
-      cursor: pointer; transition: background .15s; letter-spacing: .2px;
-    }
+    .btn-ok { flex: 2; background: var(--primary); color: white; border: none; border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .15s; }
     .btn-ok:hover { background: var(--primary-h); }
     .btn-ok:disabled { opacity: .6; cursor: not-allowed; }
 
-    /* toast */
-    .toasts {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 300; display: flex; flex-direction: column; gap: 8px;
-      pointer-events: none; align-items: center;
-    }
-    .toast {
-      background: #1e293b; color: white; padding: 9px 20px;
-      border-radius: 20px; font-size: 13px; box-shadow: var(--sh-md);
-      animation: tIn .25s ease, tOut .25s ease 2.75s forwards;
-      white-space: nowrap;
-    }
-    @keyframes tIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes tOut { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
+    /* ── Confirm Dialog ── */
+    .confirm-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.5); backdrop-filter: blur(4px); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .15s; }
+    .confirm-overlay.open { opacity: 1; pointer-events: all; }
+    .confirm-box { background: white; border-radius: 16px; padding: 24px; width: 100%; max-width: 340px; box-shadow: var(--sh-lg); transform: scale(.96); transition: transform .15s; text-align: center; }
+    .confirm-overlay.open .confirm-box { transform: scale(1); }
+    .confirm-icon { font-size: 40px; margin-bottom: 12px; }
+    .confirm-title { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+    .confirm-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+    .confirm-btns { display: flex; gap: 10px; }
+    .btn-no { flex: 1; background: var(--bg); color: var(--muted); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s; }
+    .btn-no:hover { background: var(--border); }
+    .btn-yes { flex: 1; background: #ef4444; color: white; border: none; border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .15s; }
+    .btn-yes:hover { background: #dc2626; }
 
-    /* responsive */
-    @media (max-width: 640px) {
+    /* ── Toast ── */
+    .toasts { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 400; display: flex; flex-direction: column; gap: 8px; pointer-events: none; align-items: center; }
+    .toast { background: #1e293b; color: white; padding: 9px 20px; border-radius: 20px; font-size: 13px; box-shadow: var(--sh-md); animation: tIn .25s ease, tOut .25s ease 2.75s forwards; white-space: nowrap; }
+    @keyframes tIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes tOut { from{opacity:1;} to{opacity:0;transform:translateY(8px);} }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
       .header-inner { flex-wrap: wrap; height: auto; padding: 12px 16px; gap: 10px; }
-      .stats-bar { order: 3; width: 100%; gap: 14px; }
+      .stats-bar { order: 3; width: 100%; gap: 12px; }
       .main { padding: 14px; }
       .grid { grid-template-columns: 1fr; }
       .logo { font-size: 16px; }
+      .btn-outline span, .btn-add span { display: none; }
+      .daily-card { flex-direction: column; align-items: flex-start; }
+      .daily-word { font-size: 22px; }
+      .btn-speak { opacity: 1; }
+    }
+
+    /* ── Print / PDF ── */
+    @media print {
+      .header, .filter-bar, .daily-wrap, .test-banner, .card-actions, .inp-row, .sec-arr, .btn-send, .def-hint { display: none !important; }
+      body { background: white; }
+      body.test-mode .card-def { filter: none !important; }
+      .main { padding: 0; }
+      .grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+      .card { break-inside: avoid; box-shadow: none !important; transform: none !important; animation: none !important; border: 1px solid #cbd5e1; }
+      .sec-bd { display: block !important; }
+      .sec-hd { pointer-events: none; }
+      @page { margin: 1.2cm; }
     }
   </style>
 </head>
@@ -286,19 +266,46 @@
 
     <div class="header-right">
       <div class="nick-wrap">
-        <span class="nick-icon">👤</span>
+        <span style="font-size:13px">👤</span>
         <input class="nick-input" id="nick" type="text" placeholder="输入昵称" maxlength="12">
       </div>
+      <button class="btn-outline" id="btn-test">🧪 <span>测试模式</span></button>
+      <button class="btn-outline" id="btn-pdf">🖨️ <span>导出 PDF</span></button>
       <button class="btn-add" id="btn-add">＋ 添加单词</button>
     </div>
   </div>
 </header>
 
 <main class="main">
+  <!-- Daily Word Banner -->
+  <div class="daily-wrap" id="daily-wrap" style="display:none">
+    <div class="daily-card">
+      <div class="daily-left">
+        <div class="daily-label">📅 今日词汇</div>
+        <div class="daily-row">
+          <span class="daily-word" id="dw-word"></span>
+          <span class="daily-tag" id="dw-tag" style="display:none"></span>
+        </div>
+        <div class="daily-def" id="dw-def"></div>
+      </div>
+      <div class="daily-actions">
+        <button class="daily-btn" id="dw-speak" title="朗读">🔊</button>
+        <button class="daily-btn" id="dw-shuffle" title="换一个">🔀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Mode Banner -->
+  <div class="test-banner" id="test-banner">
+    🧪 测试模式已开启 · 释义已遮挡，点击卡片查看
+    <span class="test-progress" id="test-progress"></span>
+  </div>
+
   <div class="filter-bar" id="filter-bar">
     <span class="filter-label">筛选：</span>
     <button class="ftag active" data-tag="all">全部</button>
   </div>
+
   <div class="grid" id="grid">
     <div class="placeholder">
       <div class="spinner"></div>
@@ -307,10 +314,10 @@
   </div>
 </main>
 
-<!-- Add Word Modal -->
+<!-- Add / Edit Modal -->
 <div class="overlay" id="overlay">
   <div class="modal">
-    <div class="modal-title">📝 添加新单词</div>
+    <div class="modal-title" id="modal-title">📝 添加新单词</div>
     <div class="fg">
       <label class="flabel">单词 / 知识点 <span style="color:#ef4444">*</span></label>
       <input class="finput" id="iw" type="text" placeholder="如：abandon、牛顿第一定律、async/await">
@@ -326,6 +333,19 @@
     <div class="modal-btns">
       <button class="btn-cancel" id="btn-cancel">取消</button>
       <button class="btn-ok" id="btn-ok">添加到单词本</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-icon">🗑️</div>
+    <div class="confirm-title">确认删除？</div>
+    <div class="confirm-desc" id="confirm-desc"></div>
+    <div class="confirm-btns">
+      <button class="btn-no" id="btn-no">取消</button>
+      <button class="btn-yes" id="btn-yes">确认删除</button>
     </div>
   </div>
 </div>
@@ -364,14 +384,19 @@
   /* ── State ── */
   let allWords = {};
   let activeFilter = 'all';
-  const openSections = new Set(); // "id-s" or "id-c"
+  const openSections = new Set();
+  let editingId = null;
+  let testMode = false;
+  const revealedCards = new Set();
+  let manualDailyIdx = null;
 
-  /* ── Firebase listener ── */
+  /* ── Firebase ── */
   wordsRef.on('value', snap => {
     allWords = snap.val() || {};
     renderStats();
     renderFilters();
     renderCards();
+    renderDailyWord();
   });
 
   function renderStats() {
@@ -389,7 +414,6 @@
   function renderFilters() {
     const tags = new Set(['all']);
     for (const d of Object.values(allWords)) if (d.tag) tags.add(d.tag);
-
     const bar = document.getElementById('filter-bar');
     bar.innerHTML = '<span class="filter-label">筛选：</span>';
     for (const tag of tags) {
@@ -416,7 +440,7 @@
       return;
     }
 
-    // Preserve in-progress inputs before re-render
+    // Save in-progress state
     const saved = {};
     grid.querySelectorAll('.card').forEach(card => {
       const id = card.dataset.id;
@@ -436,20 +460,15 @@
       card.style.animationDelay = Math.min(i * 30, 200) + 'ms';
       grid.appendChild(card);
       if (saved[id]) restoreCard(card, saved[id]);
+      if (revealedCards.has(id)) card.classList.add('revealed');
     });
+
+    updateTestBanner();
   }
 
   function restoreCard(card, st) {
-    if (st.sOpen) {
-      const bd = card.querySelector('.sec-bd-s');
-      const arr = card.querySelector('.sec-arr-s');
-      if (bd) { bd.classList.add('open'); arr && arr.classList.add('open'); }
-    }
-    if (st.cOpen) {
-      const bd = card.querySelector('.sec-bd-c');
-      const arr = card.querySelector('.sec-arr-c');
-      if (bd) { bd.classList.add('open'); arr && arr.classList.add('open'); }
-    }
+    if (st.sOpen) { card.querySelector('.sec-bd-s')?.classList.add('open'); card.querySelector('.sec-arr-s')?.classList.add('open'); }
+    if (st.cOpen) { card.querySelector('.sec-bd-c')?.classList.add('open'); card.querySelector('.sec-arr-c')?.classList.add('open'); }
     const [sInp, cInp] = card.querySelectorAll('.sec-inp');
     if (sInp && st.sVal) sInp.value = st.sVal;
     if (cInp && st.cVal) cInp.value = st.cVal;
@@ -467,17 +486,30 @@
       <div class="card-body">
         <div class="card-top">
           <div class="card-word">${esc(d.word)}</div>
-          ${d.tag ? `<span class="card-tag ${tagColor(d.tag)}">${esc(d.tag)}</span>` : ''}
+          <div class="card-top-right">
+            ${d.tag ? `<span class="card-tag ${tagColor(d.tag)}">${esc(d.tag)}</span>` : ''}
+            <button class="btn-icon btn-speak" title="朗读单词">🔊</button>
+          </div>
         </div>
-        ${d.definition ? `<div class="card-def">${esc(d.definition)}</div>` : ''}
-        <div class="card-meta">
-          <span>👤 ${esc(d.addedBy || '匿名')}</span>
-          <span>🕐 ${ago(d.timestamp)}</span>
+        ${d.definition ? `
+          <div class="def-wrap">
+            <div class="card-def">${esc(d.definition)}</div>
+            <div class="def-hint">👁 点击查看释义</div>
+          </div>` : ''}
+        <div class="card-footer">
+          <div class="card-meta">
+            <span>👤 ${esc(d.addedBy || '匿名')}</span>
+            <span>🕐 ${ago(d.timestamp)}</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-icon edit" title="编辑">✏️</button>
+            <button class="btn-icon del" title="删除">🗑️</button>
+          </div>
         </div>
       </div>
 
       <div class="section">
-        <div class="sec-hd" data-type="s" data-id="${id}">
+        <div class="sec-hd" data-type="s">
           <div class="sec-title">💡 补充栏 <span class="sec-cnt">${supps.length}</span></div>
           <span class="sec-arr sec-arr-s">▼</span>
         </div>
@@ -488,13 +520,13 @@
             </div>`).join('')}
           <div class="inp-row">
             <textarea class="sec-inp" placeholder="添加例句、用法、近义词…"></textarea>
-            <button class="btn-send" data-type="supp" data-id="${id}">补充</button>
+            <button class="btn-send" data-type="supp">补充</button>
           </div>
         </div>
       </div>
 
       <div class="section">
-        <div class="sec-hd" data-type="c" data-id="${id}">
+        <div class="sec-hd" data-type="c">
           <div class="sec-title">💬 留言板 <span class="sec-cnt">${comms.length}</span></div>
           <span class="sec-arr sec-arr-c">▼</span>
         </div>
@@ -505,7 +537,7 @@
             </div>`).join('')}
           <div class="inp-row">
             <textarea class="sec-inp" placeholder="提问、讨论、互动…"></textarea>
-            <button class="btn-send" data-type="comm" data-id="${id}">留言</button>
+            <button class="btn-send" data-type="comm">留言</button>
           </div>
         </div>
       </div>`;
@@ -531,8 +563,7 @@
         if (!content) { toast('请输入内容'); return; }
         const path = btn.dataset.type === 'supp' ? `words/${id}/supplements` : `words/${id}/comments`;
         const label = btn.dataset.type === 'supp' ? '补充' : '留言';
-        btn.disabled = true;
-        inp.value = '';
+        btn.disabled = true; inp.value = '';
         db.ref(path).push({ content, addedBy: getNick(), timestamp: Date.now() })
           .then(() => toast(label + '已发送 ✓'))
           .catch(() => { toast('发送失败，请检查网络'); inp.value = content; })
@@ -540,24 +571,127 @@
       });
     });
 
+    // Edit / Delete
+    card.querySelector('.btn-icon.edit').addEventListener('click', () => openEditModal(id, d));
+    card.querySelector('.btn-icon.del').addEventListener('click', () => openConfirm(id, d.word));
+
+    // 🔊 Speak button
+    card.querySelector('.btn-speak').addEventListener('click', e => {
+      e.stopPropagation();
+      speak(d.word);
+    });
+
+    // 测试模式：点击释义区域揭示
+    const defWrap = card.querySelector('.def-wrap');
+    if (defWrap) {
+      defWrap.addEventListener('click', () => {
+        if (!testMode) return;
+        card.classList.add('revealed');
+        revealedCards.add(id);
+        updateTestBanner();
+      });
+    }
+
     return card;
   }
 
-  /* ── Modal ── */
+  /* ── 🔊 TTS 朗读 ── */
+  function speak(text) {
+    if (!window.speechSynthesis) { toast('浏览器不支持朗读功能'); return; }
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    // 简单判断语言：纯 ASCII 视为英文，否则中文
+    utt.lang = /^[\x00-\x7F\s\-']+$/.test(text) ? 'en-US' : 'zh-CN';
+    utt.rate = 0.85;
+    window.speechSynthesis.speak(utt);
+  }
+
+  /* ── 📅 今日词汇 ── */
+  function renderDailyWord() {
+    const entries = Object.entries(allWords);
+    const wrap = document.getElementById('daily-wrap');
+    if (entries.length === 0) { wrap.style.display = 'none'; return; }
+
+    let idx;
+    if (manualDailyIdx !== null) {
+      idx = manualDailyIdx % entries.length;
+    } else {
+      // 用日期字符串做哈希，同一天始终显示同一个词
+      const dateStr = new Date().toDateString();
+      let hash = 0;
+      for (let i = 0; i < dateStr.length; i++) hash = (hash * 31 + dateStr.charCodeAt(i)) >>> 0;
+      idx = hash % entries.length;
+    }
+
+    const [, d] = entries[idx];
+    document.getElementById('dw-word').textContent = d.word || '';
+    const tagEl = document.getElementById('dw-tag');
+    if (d.tag) { tagEl.textContent = d.tag; tagEl.style.display = ''; }
+    else { tagEl.style.display = 'none'; }
+    document.getElementById('dw-def').textContent = d.definition || '（暂无释义）';
+    wrap.style.display = '';
+
+    document.getElementById('dw-speak').onclick = () => speak(d.word);
+  }
+
+  document.getElementById('dw-shuffle').onclick = () => {
+    const len = Object.keys(allWords).length;
+    if (len === 0) return;
+    manualDailyIdx = Math.floor(Math.random() * len);
+    renderDailyWord();
+  };
+
+  /* ── 🧪 测试模式 ── */
+  document.getElementById('btn-test').addEventListener('click', () => {
+    testMode = !testMode;
+    document.body.classList.toggle('test-mode', testMode);
+    const btn = document.getElementById('btn-test');
+    btn.classList.toggle('active', testMode);
+    btn.innerHTML = testMode ? '✅ <span>退出测试</span>' : '🧪 <span>测试模式</span>';
+    if (!testMode) {
+      revealedCards.clear();
+      document.querySelectorAll('.card.revealed').forEach(c => c.classList.remove('revealed'));
+    }
+    updateTestBanner();
+  });
+
+  function updateTestBanner() {
+    const banner = document.getElementById('test-banner');
+    if (!testMode) { banner.classList.remove('show'); return; }
+    banner.classList.add('show');
+    const total = Object.values(allWords).filter(d => d.definition).length;
+    document.getElementById('test-progress').textContent = `已查看 ${revealedCards.size} / ${total}`;
+  }
+
+  /* ── Add / Edit Modal ── */
   const overlay = document.getElementById('overlay');
+
   document.getElementById('btn-add').onclick = () => {
+    editingId = null;
+    document.getElementById('modal-title').textContent = '📝 添加新单词';
+    document.getElementById('btn-ok').textContent = '添加到单词本';
+    ['iw','it','id'].forEach(x => document.getElementById(x).value = '');
     overlay.classList.add('open');
     document.getElementById('iw').focus();
   };
+
+  function openEditModal(id, d) {
+    editingId = id;
+    document.getElementById('modal-title').textContent = '✏️ 编辑单词';
+    document.getElementById('btn-ok').textContent = '保存修改';
+    document.getElementById('iw').value = d.word || '';
+    document.getElementById('it').value = d.tag || '';
+    document.getElementById('id').value = d.definition || '';
+    overlay.classList.add('open');
+    document.getElementById('iw').focus();
+  }
+
   document.getElementById('btn-cancel').onclick = closeModal;
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeConfirm(); } });
   document.getElementById('iw').addEventListener('keydown', e => { if (e.key === 'Enter') submitWord(); });
 
-  function closeModal() {
-    overlay.classList.remove('open');
-    ['iw','it','id'].forEach(x => document.getElementById(x).value = '');
-  }
+  function closeModal() { overlay.classList.remove('open'); editingId = null; }
 
   document.getElementById('btn-ok').onclick = submitWord;
 
@@ -567,12 +701,53 @@
     const def  = document.getElementById('id').value.trim();
     if (!word) { toast('请输入单词或知识点'); document.getElementById('iw').focus(); return; }
     const btn = document.getElementById('btn-ok');
-    btn.disabled = true; btn.textContent = '添加中…';
-    wordsRef.push({ word, tag: tag||null, definition: def||null, addedBy: getNick(), timestamp: Date.now() })
-      .then(() => { closeModal(); toast('单词已添加 ✓'); })
-      .catch(() => toast('添加失败，请检查 Firebase 规则'))
-      .finally(() => { btn.disabled = false; btn.textContent = '添加到单词本'; });
+    btn.disabled = true; btn.textContent = editingId ? '保存中…' : '添加中…';
+    const data = { word, tag: tag || null, definition: def || null };
+    const op = editingId
+      ? db.ref('words/' + editingId).update(data)
+      : wordsRef.push({ ...data, addedBy: getNick(), timestamp: Date.now() });
+    op.then(() => { closeModal(); toast(editingId ? '修改已保存 ✓' : '单词已添加 ✓'); })
+      .catch(() => toast('操作失败，请检查 Firebase 规则'))
+      .finally(() => { btn.disabled = false; btn.textContent = editingId ? '保存修改' : '添加到单词本'; });
   }
+
+  /* ── Delete Confirm ── */
+  let pendingDeleteId = null;
+  const confirmOverlay = document.getElementById('confirm-overlay');
+
+  function openConfirm(id, wordText) {
+    pendingDeleteId = id;
+    document.getElementById('confirm-desc').textContent = `「${wordText}」删除后无法恢复，包括该单词下的所有补充和留言。`;
+    confirmOverlay.classList.add('open');
+  }
+  function closeConfirm() { confirmOverlay.classList.remove('open'); pendingDeleteId = null; }
+
+  document.getElementById('btn-no').onclick = closeConfirm;
+  confirmOverlay.addEventListener('click', e => { if (e.target === confirmOverlay) closeConfirm(); });
+
+  document.getElementById('btn-yes').onclick = () => {
+    if (!pendingDeleteId) return;
+    const btn = document.getElementById('btn-yes');
+    btn.disabled = true; btn.textContent = '删除中…';
+    db.ref('words/' + pendingDeleteId).remove()
+      .then(() => { closeConfirm(); toast('已删除 ✓'); })
+      .catch(() => toast('删除失败，请检查网络'))
+      .finally(() => { btn.disabled = false; btn.textContent = '确认删除'; });
+  };
+
+  /* ── PDF Export ── */
+  document.getElementById('btn-pdf').onclick = () => {
+    document.querySelectorAll('.sec-bd').forEach(bd => bd.classList.add('open'));
+    window.print();
+    setTimeout(() => {
+      document.querySelectorAll('.sec-bd').forEach(bd => {
+        const card = bd.closest('.card');
+        const id = card?.dataset.id;
+        const type = bd.classList.contains('sec-bd-s') ? 's' : 'c';
+        if (!openSections.has(id + '-' + type)) bd.classList.remove('open');
+      });
+    }, 1000);
+  };
 
   /* ── Helpers ── */
   function ago(ts) {
