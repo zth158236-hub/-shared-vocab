@@ -237,6 +237,214 @@
       .btn-speak { opacity: 1; }
     }
 
+    /* ── ⚔️ Challenge Mode ── */
+    .chal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(10,10,20,.92); backdrop-filter: blur(10px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+
+    /* Setup */
+    .chal-setup-box {
+      background: white; border-radius: 20px; padding: 32px 28px 24px;
+      width: 100%; max-width: 440px; box-shadow: 0 30px 60px rgba(0,0,0,.4);
+      animation: fadeUp .25s ease;
+    }
+    .chal-setup-title { font-size: 20px; font-weight: 900; margin-bottom: 24px; text-align: center; }
+    .chal-setup-row { margin-bottom: 18px; }
+    .chal-setup-row label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; display: block; margin-bottom: 8px; }
+    .chal-chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chal-chip {
+      padding: 6px 16px; border-radius: 20px; border: 1.5px solid var(--border);
+      background: white; font-size: 13px; font-weight: 600; cursor: pointer;
+      color: var(--muted); transition: all .15s;
+    }
+    .chal-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .chal-chip.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .chal-custom-input {
+      width: 90px; border: 1.5px solid var(--border); border-radius: 20px;
+      padding: 6px 14px; font-size: 13px; outline: none; text-align: center;
+      transition: border-color .2s; font-family: inherit;
+    }
+    .chal-custom-input:focus { border-color: var(--primary); }
+    .chal-select {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 9px 14px; font-size: 14px; outline: none; font-family: inherit;
+      transition: border-color .2s; background: white; cursor: pointer;
+    }
+    .chal-select:focus { border-color: var(--primary); }
+    .chal-setup-actions { display: flex; gap: 10px; margin-top: 24px; }
+    .chal-btn-cancel {
+      flex: 1; background: var(--bg); color: var(--muted);
+      border: 1.5px solid var(--border); border-radius: 10px; padding: 11px;
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s;
+    }
+    .chal-btn-cancel:hover { background: var(--border); }
+    .chal-btn-start {
+      flex: 2; background: var(--primary); color: white; border: none;
+      border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background .15s;
+    }
+    .chal-btn-start:hover { background: var(--primary-h); }
+
+    /* Session topbar */
+    .chal-topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      padding: 12px 20px; display: flex; align-items: center; gap: 14px;
+      background: rgba(10,10,20,.8); backdrop-filter: blur(8px);
+    }
+    .chal-exit-btn {
+      background: rgba(255,255,255,.12); color: white; border: none;
+      border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: background .15s; white-space: nowrap; flex-shrink: 0;
+    }
+    .chal-exit-btn:hover { background: rgba(255,255,255,.22); }
+    .chal-prog-wrap { flex: 1; }
+    .chal-prog-track { height: 6px; background: rgba(255,255,255,.15); border-radius: 6px; overflow: hidden; margin-bottom: 4px; }
+    .chal-prog-fill { height: 100%; background: linear-gradient(90deg, #818cf8, #4f46e5); border-radius: 6px; transition: width .4s ease; }
+    .chal-prog-text { font-size: 11px; color: rgba(255,255,255,.6); text-align: center; }
+    .chal-chips { display: flex; gap: 8px; flex-shrink: 0; }
+    .chal-chip-ok { background: rgba(34,197,94,.2); color: #86efac; border: 1px solid rgba(34,197,94,.3); border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 700; }
+    .chal-chip-no { background: rgba(239,68,68,.2); color: #fca5a5; border: 1px solid rgba(239,68,68,.3); border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 700; }
+
+    /* Session card */
+    .chal-card-area { display: flex; align-items: center; justify-content: center; width: 100%; padding-top: 60px; }
+    .chal-card {
+      background: white; border-radius: 20px;
+      padding: 40px 36px 32px; width: 100%; max-width: 500px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+      animation: chalSlide .3s ease;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    @keyframes chalSlide { from { opacity:0; transform:translateY(16px) scale(.97); } to { opacity:1; transform:none; } }
+    .chal-word-text { font-size: 40px; font-weight: 900; color: var(--text); margin-bottom: 12px; line-height: 1.1; }
+    .chal-tag-area { margin-bottom: 20px; min-height: 24px; }
+    .chal-def-text { font-size: 16px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; text-align: left; width: 100%; background: var(--bg); border-radius: 10px; padding: 14px 16px; }
+    .chal-hint { font-size: 13px; color: #94a3b8; margin-bottom: 24px; }
+    .chal-kbd { display: inline-block; background: var(--bg); border: 1px solid var(--border); border-radius: 5px; padding: 1px 7px; font-size: 11px; font-family: monospace; }
+
+    /* Reveal button */
+    .chal-reveal-btn {
+      background: var(--primary); color: white; border: none;
+      border-radius: 12px; padding: 13px 28px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background .15s, transform .1s;
+      box-shadow: 0 4px 16px rgba(79,70,229,.35); margin-bottom: 16px;
+    }
+    .chal-reveal-btn:hover { background: var(--primary-h); }
+    .chal-reveal-btn:active { transform: scale(.97); }
+
+    /* Speak button (in card) */
+    .chal-speak-btn {
+      background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 8px 16px; font-size: 14px; cursor: pointer; transition: all .15s;
+      color: var(--muted);
+    }
+    .chal-speak-btn:hover { border-color: #0ea5e9; color: #0ea5e9; background: #f0f9ff; }
+
+    /* Rate buttons */
+    .chal-rate-row { display: flex; gap: 12px; width: 100%; }
+    .chal-btn-no {
+      flex: 1; background: #fef2f2; color: #ef4444; border: 2px solid #fecaca;
+      border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: all .15s;
+    }
+    .chal-btn-no:hover { background: #fee2e2; border-color: #ef4444; }
+    .chal-btn-ok {
+      flex: 1; background: #f0fdf4; color: #22c55e; border: 2px solid #bbf7d0;
+      border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: all .15s;
+    }
+    .chal-btn-ok:hover { background: #dcfce7; border-color: #22c55e; }
+
+    /* Spell input */
+    .chal-spell-input {
+      width: 100%; border: 2px solid var(--border); border-radius: 12px;
+      padding: 14px 18px; font-size: 18px; outline: none; text-align: center;
+      font-family: inherit; font-weight: 600; transition: border-color .2s, box-shadow .2s;
+      margin-bottom: 14px; letter-spacing: .5px;
+    }
+    .chal-spell-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
+    .chal-spell-input.correct { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
+    .chal-spell-input.near { border-color: #f59e0b; background: #fffbeb; color: #a16207; }
+    .chal-spell-input.wrong { border-color: #ef4444; background: #fef2f2; color: #b91c1c; }
+    .chal-spell-actions { display: flex; gap: 10px; width: 100%; }
+    .chal-btn-skip {
+      flex: 1; background: var(--bg); color: var(--muted);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 11px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s;
+    }
+    .chal-btn-skip:hover { background: var(--border); }
+    .chal-btn-submit {
+      flex: 2; background: var(--primary); color: white; border: none;
+      border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background .15s;
+    }
+    .chal-btn-submit:hover { background: var(--primary-h); }
+    .chal-btn-next {
+      width: 100%; background: var(--primary); color: white; border: none;
+      border-radius: 10px; padding: 12px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background .15s; margin-top: 14px;
+    }
+    .chal-btn-next:hover { background: var(--primary-h); }
+
+    /* Spell result */
+    .chal-result-icon { font-size: 36px; margin-bottom: 8px; }
+    .chal-result-label { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+    .chal-correct-word { font-size: 22px; font-weight: 900; color: var(--primary); margin: 4px 0 12px; }
+    .chal-attempts-hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+    /* Summary */
+    .chal-summary-box {
+      background: white; border-radius: 20px; padding: 36px 28px 28px;
+      width: 100%; max-width: 460px; box-shadow: 0 30px 60px rgba(0,0,0,.4);
+      animation: fadeUp .3s ease; max-height: 90vh; overflow-y: auto;
+    }
+    .chal-summary-title { font-size: 20px; font-weight: 900; text-align: center; margin-bottom: 6px; }
+    .chal-score-circle {
+      width: 100px; height: 100px; border-radius: 50%; margin: 20px auto;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 900; color: white;
+    }
+    .chal-score-circle.great { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .chal-score-circle.good { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .chal-score-circle.poor { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .chal-score-sub { font-size: 11px; font-weight: 600; opacity: .8; }
+    .chal-summary-stats { display: flex; gap: 10px; margin: 16px 0; }
+    .chal-stat-box {
+      flex: 1; border-radius: 12px; padding: 14px 10px; text-align: center;
+    }
+    .chal-stat-box.ok { background: #f0fdf4; }
+    .chal-stat-box.no { background: #fef2f2; }
+    .chal-stat-box.near { background: #fffbeb; }
+    .chal-stat-n { font-size: 24px; font-weight: 900; }
+    .chal-stat-box.ok .chal-stat-n { color: #22c55e; }
+    .chal-stat-box.no .chal-stat-n { color: #ef4444; }
+    .chal-stat-box.near .chal-stat-n { color: #f59e0b; }
+    .chal-stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .chal-miss-list { margin: 14px 0; }
+    .chal-miss-title { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; }
+    .chal-miss-item { background: var(--bg); border-radius: 8px; padding: 8px 12px; margin-bottom: 6px; font-size: 13px; display: flex; gap: 10px; }
+    .chal-miss-word { font-weight: 700; color: var(--text); flex-shrink: 0; }
+    .chal-miss-def { color: var(--muted); }
+    .chal-summary-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .chal-btn-again {
+      flex: 1; background: var(--primary); color: white; border: none;
+      border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .15s;
+    }
+    .chal-btn-again:hover { background: var(--primary-h); }
+    .chal-btn-back {
+      flex: 1; background: var(--bg); color: var(--muted);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s;
+    }
+    .chal-btn-back:hover { background: var(--border); }
+
+    @media (max-width: 480px) {
+      .chal-word-text { font-size: 30px; }
+      .chal-card { padding: 28px 20px 24px; }
+    }
+
     /* ── Print / PDF ── */
     @media print {
       .header, .filter-bar, .daily-wrap, .test-banner, .card-actions, .inp-row, .sec-arr, .btn-send, .def-hint { display: none !important; }
@@ -269,6 +477,7 @@
         <span style="font-size:13px">👤</span>
         <input class="nick-input" id="nick" type="text" placeholder="输入昵称" maxlength="12">
       </div>
+      <button class="btn-outline" id="btn-chal">⚔️ <span>挑战模式</span></button>
       <button class="btn-outline" id="btn-test">🧪 <span>测试模式</span></button>
       <button class="btn-outline" id="btn-pdf">🖨️ <span>导出 PDF</span></button>
       <button class="btn-add" id="btn-add">＋ 添加单词</button>
@@ -348,6 +557,72 @@
       <button class="btn-yes" id="btn-yes">确认删除</button>
     </div>
   </div>
+</div>
+
+<!-- ⚔️ Challenge Mode Overlay -->
+<div id="chal-overlay" style="display:none">
+
+  <!-- Setup Screen -->
+  <div id="chal-setup">
+    <div class="chal-setup-box">
+      <div class="chal-setup-title">⚔️ 挑战模式</div>
+
+      <div class="chal-setup-row">
+        <label>挑战数量</label>
+        <div class="chal-chip-row">
+          <button class="chal-chip" data-n="5">5</button>
+          <button class="chal-chip active" data-n="10">10</button>
+          <button class="chal-chip" data-n="20">20</button>
+          <button class="chal-chip" data-n="50">50</button>
+          <input class="chal-custom-input" id="chal-n-custom" type="number" min="1" max="500" placeholder="自定义">
+        </div>
+      </div>
+
+      <div class="chal-setup-row">
+        <label>模式</label>
+        <div class="chal-chip-row">
+          <button class="chal-chip active" data-mode="flash">📖 认识模式</button>
+          <button class="chal-chip" data-mode="spell">✍️ 拼写模式</button>
+        </div>
+      </div>
+
+      <div class="chal-setup-row">
+        <label>范围</label>
+        <select class="chal-select" id="chal-tag-sel">
+          <option value="all">全部单词</option>
+        </select>
+      </div>
+
+      <div class="chal-setup-actions">
+        <button class="chal-btn-cancel" id="chal-cancel">取消</button>
+        <button class="chal-btn-start" id="chal-start">开始挑战</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Screen -->
+  <div id="chal-session" style="display:none">
+    <div class="chal-topbar">
+      <button class="chal-exit-btn" id="chal-exit">✕ 退出</button>
+      <div class="chal-prog-wrap">
+        <div class="chal-prog-track"><div class="chal-prog-fill" id="chal-fill"></div></div>
+        <div class="chal-prog-text" id="chal-prog">1 / 10</div>
+      </div>
+      <div class="chal-chips">
+        <span class="chal-chip-ok" id="chal-c-ok">✅ 0</span>
+        <span class="chal-chip-no" id="chal-c-no">❌ 0</span>
+      </div>
+    </div>
+    <div class="chal-card-area">
+      <div id="chal-card"></div>
+    </div>
+  </div>
+
+  <!-- Summary Screen -->
+  <div id="chal-summary" style="display:none">
+    <div class="chal-summary-box" id="chal-summary-box"></div>
+  </div>
+
 </div>
 
 <div class="toasts" id="toasts"></div>
@@ -748,6 +1023,288 @@
       });
     }, 1000);
   };
+
+  /* ── ⚔️ Challenge Mode ── */
+  const ch = {
+    words: [], idx: 0, mode: 'flash', count: 10,
+    ok: 0, near: 0, no: 0,
+    revealed: false, spellResult: null, attempts: 0,
+    missed: []   // words marked 不认识 or wrong
+  };
+
+  function chalScreen(id) {
+    ['chal-setup','chal-session','chal-summary'].forEach(s => {
+      document.getElementById(s).style.display = s === id ? '' : 'none';
+    });
+  }
+
+  // Open setup
+  document.getElementById('btn-chal').addEventListener('click', () => {
+    // Populate tag filter
+    const sel = document.getElementById('chal-tag-sel');
+    const tags = new Set(Object.values(allWords).map(d => d.tag).filter(Boolean));
+    sel.innerHTML = '<option value="all">全部单词</option>';
+    tags.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; sel.appendChild(o); });
+
+    document.getElementById('chal-overlay').style.display = 'flex';
+    chalScreen('chal-setup');
+  });
+
+  // Chip selectors in setup
+  document.getElementById('chal-overlay').addEventListener('click', e => {
+    const chip = e.target.closest('.chal-chip[data-n]');
+    if (chip) {
+      chip.closest('.chal-chip-row').querySelectorAll('.chal-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      document.getElementById('chal-n-custom').value = '';
+    }
+    const mchip = e.target.closest('.chal-chip[data-mode]');
+    if (mchip) {
+      mchip.closest('.chal-chip-row').querySelectorAll('.chal-chip').forEach(c => c.classList.remove('active'));
+      mchip.classList.add('active');
+    }
+  });
+
+  document.getElementById('chal-cancel').onclick = closeChal;
+  document.getElementById('chal-exit').onclick = closeChal;
+
+  function closeChal() {
+    document.getElementById('chal-overlay').style.display = 'none';
+    removeChalKey();
+  }
+
+  document.getElementById('chal-start').onclick = () => {
+    const overlay = document.getElementById('chal-overlay');
+    // Get count
+    const customVal = parseInt(document.getElementById('chal-n-custom').value);
+    const activeChip = overlay.querySelector('.chal-chip[data-n].active');
+    const count = !isNaN(customVal) && customVal > 0 ? customVal : (activeChip ? parseInt(activeChip.dataset.n) : 10);
+    // Get mode
+    const modeChip = overlay.querySelector('.chal-chip[data-mode].active');
+    const mode = modeChip ? modeChip.dataset.mode : 'flash';
+    // Get tag filter
+    const tag = document.getElementById('chal-tag-sel').value;
+    // Pick words
+    let pool = Object.values(allWords).filter(d => d.word);
+    if (tag !== 'all') pool = pool.filter(d => d.tag === tag);
+    if (mode === 'spell') pool = pool.filter(d => d.definition); // need definition for spelling
+    if (!pool.length) { toast('当前范围没有可用单词'); return; }
+    // Shuffle and slice
+    const shuffled = pool.sort(() => Math.random() - .5).slice(0, Math.min(count, pool.length));
+    // Init state
+    ch.words = shuffled; ch.idx = 0; ch.mode = mode; ch.count = shuffled.length;
+    ch.ok = 0; ch.near = 0; ch.no = 0; ch.missed = [];
+    ch.revealed = false; ch.spellResult = null; ch.attempts = 0;
+    updateChalScore();
+    chalScreen('chal-session');
+    renderChalCard();
+    addChalKey();
+  };
+
+  function renderChalCard() {
+    const word = ch.words[ch.idx];
+    const el = document.getElementById('chal-card');
+    // Progress
+    const pct = (ch.idx / ch.count) * 100;
+    document.getElementById('chal-fill').style.width = pct + '%';
+    document.getElementById('chal-prog').textContent = (ch.idx + 1) + ' / ' + ch.count;
+
+    if (ch.mode === 'flash') renderFlash(word, el);
+    else renderSpell(word, el);
+  }
+
+  function renderFlash(w, el) {
+    if (!ch.revealed) {
+      el.innerHTML = `
+        <div class="chal-card">
+          <div class="chal-word-text">${esc(w.word)}</div>
+          <div class="chal-tag-area">${w.tag ? `<span class="card-tag ${tagColor(w.tag)}">${esc(w.tag)}</span>` : ''}</div>
+          <div class="chal-hint">认识这个词吗？先想一想</div>
+          <button class="chal-reveal-btn" id="ch-reveal">👁 查看释义 <span class="chal-kbd">F</span></button>
+          <button class="chal-speak-btn" style="margin-top:10px" id="ch-speak">🔊 朗读</button>
+        </div>`;
+      document.getElementById('ch-reveal').onclick = () => { ch.revealed = true; renderChalCard(); };
+      document.getElementById('ch-speak').onclick = () => speak(w.word);
+    } else {
+      el.innerHTML = `
+        <div class="chal-card">
+          <div class="chal-word-text">${esc(w.word)}</div>
+          ${w.definition ? `<div class="chal-def-text">${esc(w.definition)}</div>` : '<div class="chal-hint">（暂无释义）</div>'}
+          <button class="chal-speak-btn" style="margin-bottom:20px" id="ch-speak">🔊 朗读</button>
+          <div class="chal-rate-row">
+            <button class="chal-btn-no" id="ch-no">❌ 不认识</button>
+            <button class="chal-btn-ok" id="ch-ok">✅ 认识</button>
+          </div>
+          <div class="chal-hint" style="margin-top:12px">← 不认识 &nbsp;|&nbsp; → 认识</div>
+        </div>`;
+      document.getElementById('ch-speak').onclick = () => speak(w.word);
+      document.getElementById('ch-no').onclick = () => rateFlash(false);
+      document.getElementById('ch-ok').onclick = () => rateFlash(true);
+    }
+  }
+
+  function rateFlash(known) {
+    if (known) ch.ok++; else { ch.no++; ch.missed.push(ch.words[ch.idx]); }
+    updateChalScore();
+    chalNext();
+  }
+
+  function renderSpell(w, el) {
+    if (!ch.spellResult) {
+      el.innerHTML = `
+        <div class="chal-card">
+          <div class="chal-hint" style="margin-bottom:8px">根据释义，拼写出单词</div>
+          <div class="chal-def-text">${esc(w.definition || '（暂无释义）')}</div>
+          ${ch.attempts > 0 ? `<div class="chal-attempts-hint">第 ${ch.attempts+1} 次尝试（最多3次）</div>` : ''}
+          <input class="chal-spell-input" id="ch-input" type="text" placeholder="输入单词…" autocomplete="off">
+          <div class="chal-spell-actions">
+            <button class="chal-btn-skip" id="ch-skip">跳过</button>
+            <button class="chal-btn-submit" id="ch-submit">提交 <span class="chal-kbd">Enter</span></button>
+          </div>
+        </div>`;
+      const inp = document.getElementById('ch-input');
+      inp.focus();
+      document.getElementById('ch-submit').onclick = submitSpell;
+      document.getElementById('ch-skip').onclick = () => {
+        ch.spellResult = 'wrong'; ch.no++; ch.missed.push(w); updateChalScore(); renderChalCard();
+      };
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); submitSpell(); } });
+    } else {
+      const icons = { correct:'✅', near:'🟡', wrong:'❌' };
+      const labels = { correct:'拼写正确！', near:'非常接近', wrong:'拼写错误' };
+      const colors = { correct:'#22c55e', near:'#f59e0b', wrong:'#ef4444' };
+      const r = ch.spellResult;
+      el.innerHTML = `
+        <div class="chal-card">
+          <div class="chal-result-icon">${icons[r]}</div>
+          <div class="chal-result-label" style="color:${colors[r]}">${labels[r]}</div>
+          <div class="chal-correct-word">${esc(w.word)}</div>
+          ${w.definition ? `<div class="chal-def-text">${esc(w.definition)}</div>` : ''}
+          <button class="chal-speak-btn" id="ch-speak">🔊 朗读正确答案</button>
+          <button class="chal-btn-next" id="ch-next">下一个 <span class="chal-kbd">Enter</span></button>
+        </div>`;
+      document.getElementById('ch-speak').onclick = () => speak(w.word);
+      document.getElementById('ch-next').onclick = chalNext;
+    }
+  }
+
+  function submitSpell() {
+    const inp = document.getElementById('ch-input');
+    if (!inp) return;
+    const answer = inp.value.trim();
+    if (!answer) return;
+    const w = ch.words[ch.idx];
+    const dist = levenshtein(answer, w.word);
+    let result;
+    if (answer.toLowerCase() === w.word.toLowerCase()) result = 'correct';
+    else if (dist <= 1) result = 'near';
+    else if (ch.attempts < 2) {
+      // Give another chance
+      ch.attempts++;
+      inp.classList.add('wrong');
+      setTimeout(() => { inp.classList.remove('wrong'); inp.value = ''; inp.focus(); }, 600);
+      return;
+    } else result = 'wrong';
+
+    ch.spellResult = result;
+    if (result === 'correct') ch.ok++;
+    else if (result === 'near') ch.near++;
+    else { ch.no++; ch.missed.push(w); }
+    updateChalScore();
+    renderChalCard();
+  }
+
+  function levenshtein(a, b) {
+    const s = a.toLowerCase().trim(), t = b.toLowerCase().trim();
+    if (!s) return t.length; if (!t) return s.length;
+    const d = Array.from({length: s.length+1}, (_, i) => Array.from({length: t.length+1}, (_, j) => j === 0 ? i : 0));
+    for (let j = 1; j <= t.length; j++) d[0][j] = j;
+    for (let i = 1; i <= s.length; i++)
+      for (let j = 1; j <= t.length; j++)
+        d[i][j] = Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]+(s[i-1]===t[j-1]?0:1));
+    return d[s.length][t.length];
+  }
+
+  function chalNext() {
+    ch.idx++;
+    ch.revealed = false; ch.spellResult = null; ch.attempts = 0;
+    if (ch.idx >= ch.words.length) { showChalSummary(); return; }
+    renderChalCard();
+  }
+
+  function updateChalScore() {
+    document.getElementById('chal-c-ok').textContent = '✅ ' + (ch.ok + ch.near);
+    document.getElementById('chal-c-no').textContent = '❌ ' + ch.no;
+  }
+
+  function showChalSummary() {
+    chalScreen('chal-summary');
+    const total = ch.count;
+    const okTotal = ch.ok + ch.near;
+    const pct = Math.round((okTotal / total) * 100);
+    const grade = pct >= 80 ? 'great' : pct >= 50 ? 'good' : 'poor';
+    const gradeLabel = pct >= 80 ? '太棒了！' : pct >= 50 ? '继续加油' : '需要强化';
+    const modeLabel = ch.mode === 'flash' ? '认识模式' : '拼写模式';
+
+    let missedHtml = '';
+    if (ch.missed.length) {
+      missedHtml = `<div class="chal-miss-list">
+        <div class="chal-miss-title">⚠️ 需要加强的单词 (${ch.missed.length})</div>
+        ${ch.missed.map(w => `
+          <div class="chal-miss-item">
+            <span class="chal-miss-word">${esc(w.word)}</span>
+            <span class="chal-miss-def">${esc((w.definition||'').substring(0,40))}${w.definition && w.definition.length > 40 ? '…' : ''}</span>
+          </div>`).join('')}
+      </div>`;
+    }
+
+    document.getElementById('chal-summary-box').innerHTML = `
+      <div class="chal-summary-title">${gradeLabel}</div>
+      <div style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:4px">${modeLabel} · ${total} 个单词</div>
+      <div class="chal-score-circle ${grade}">
+        <div>${pct}%</div>
+        <div class="chal-score-sub">${okTotal}/${total}</div>
+      </div>
+      <div class="chal-summary-stats">
+        <div class="chal-stat-box ok"><div class="chal-stat-n">${ch.ok}</div><div class="chal-stat-label">✅ 认识</div></div>
+        ${ch.mode === 'spell' ? `<div class="chal-stat-box near"><div class="chal-stat-n">${ch.near}</div><div class="chal-stat-label">🟡 接近</div></div>` : ''}
+        <div class="chal-stat-box no"><div class="chal-stat-n">${ch.no}</div><div class="chal-stat-label">❌ 不认识</div></div>
+      </div>
+      ${missedHtml}
+      <div class="chal-summary-actions">
+        <button class="chal-btn-again" id="chal-again">🔄 再来一次</button>
+        <button class="chal-btn-back" id="chal-back">返回单词本</button>
+      </div>`;
+
+    document.getElementById('chal-again').onclick = () => document.getElementById('chal-start').click();
+    document.getElementById('chal-back').onclick = closeChal;
+    removeChalKey();
+  }
+
+  // Keyboard shortcuts for challenge
+  function chalKeyHandler(e) {
+    if (document.getElementById('chal-overlay').style.display === 'none') return;
+    if (document.getElementById('chal-session').style.display === 'none') return;
+
+    const w = ch.words[ch.idx];
+    if (ch.mode === 'flash') {
+      if (!ch.revealed && (e.key === 'f' || e.key === 'F' || e.key === ' ')) {
+        e.preventDefault(); ch.revealed = true; renderChalCard();
+      } else if (ch.revealed && (e.key === 'ArrowRight' || e.key === '2')) {
+        e.preventDefault(); rateFlash(true);
+      } else if (ch.revealed && (e.key === 'ArrowLeft' || e.key === '1')) {
+        e.preventDefault(); rateFlash(false);
+      }
+    } else {
+      if (ch.spellResult && e.key === 'Enter') {
+        e.preventDefault(); chalNext();
+      }
+    }
+    if (e.key === 'Escape') closeChal();
+  }
+
+  function addChalKey() { document.addEventListener('keydown', chalKeyHandler); }
+  function removeChalKey() { document.removeEventListener('keydown', chalKeyHandler); }
 
   /* ── Helpers ── */
   function ago(ts) {
