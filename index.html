@@ -445,6 +445,48 @@
       .chal-card { padding: 28px 20px 24px; }
     }
 
+    /* ── Import Overlay ── */
+    #import-overlay {
+      position: fixed; inset: 0; z-index: 600;
+      background: rgba(10,10,20,.88); backdrop-filter: blur(10px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .import-box {
+      background: white; border-radius: 20px; padding: 32px 28px 24px;
+      width: 100%; max-width: 500px; box-shadow: 0 30px 60px rgba(0,0,0,.4);
+      animation: fadeUp .25s ease;
+    }
+    .import-title { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+    .import-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+    .import-file-zone {
+      display: flex; align-items: center; justify-content: center;
+      border: 2px dashed var(--border); border-radius: 12px; padding: 22px;
+      cursor: pointer; transition: border-color .2s, background .2s; margin-bottom: 14px; gap: 8px;
+      font-size: 14px; font-weight: 600; color: var(--muted);
+    }
+    .import-file-zone:hover { border-color: var(--primary); background: #f0f0ff; color: var(--primary); }
+    .import-stats { font-size: 13px; color: var(--muted); margin-bottom: 10px; padding: 10px 12px; background: var(--bg); border-radius: 8px; }
+    .import-preview-list { max-height: 180px; overflow-y: auto; margin-bottom: 14px; border: 1px solid var(--border); border-radius: 8px; }
+    .import-word-row { display: flex; gap: 12px; padding: 7px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .import-word-row:last-child { border-bottom: none; }
+    .iw-word { font-weight: 700; min-width: 110px; flex-shrink: 0; }
+    .iw-def { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .import-more { font-size: 12px; color: var(--muted); padding: 7px 12px; }
+    .import-actions { display: flex; gap: 10px; margin-top: 4px; }
+    .import-btn-cancel {
+      flex: 1; background: var(--bg); color: var(--muted);
+      border: 1.5px solid var(--border); border-radius: 10px; padding: 11px;
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s;
+    }
+    .import-btn-cancel:hover { background: var(--border); }
+    .import-btn-go {
+      flex: 2; background: var(--primary); color: white; border: none;
+      border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background .15s;
+    }
+    .import-btn-go:hover:not(:disabled) { background: var(--primary-h); }
+    .import-btn-go:disabled { background: #94a3b8; cursor: not-allowed; }
+
     /* ── Print / PDF ── */
     @media print {
       .header, .filter-bar, .daily-wrap, .test-banner, .card-actions, .inp-row, .sec-arr, .btn-send, .def-hint { display: none !important; }
@@ -479,6 +521,7 @@
       </div>
       <button class="btn-outline" id="btn-chal">⚔️ <span>挑战模式</span></button>
       <button class="btn-outline" id="btn-test">🧪 <span>测试模式</span></button>
+      <button class="btn-outline" id="btn-import">📥 <span>导入词库</span></button>
       <button class="btn-outline" id="btn-pdf">🖨️ <span>导出 PDF</span></button>
       <button class="btn-add" id="btn-add">＋ 添加单词</button>
     </div>
@@ -555,6 +598,26 @@
     <div class="confirm-btns">
       <button class="btn-no" id="btn-no">取消</button>
       <button class="btn-yes" id="btn-yes">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 📥 Import Overlay -->
+<div id="import-overlay" style="display:none">
+  <div class="import-box">
+    <div class="import-title">📥 导入词库</div>
+    <div class="import-desc">上传从词汇 App 导出的 JSON 进度文件，自动导入已复习过的单词（repetitions &gt; 0），重复单词自动跳过。</div>
+    <div class="import-file-zone" id="import-file-zone">
+      <input type="file" id="import-file-input" accept=".json" style="display:none">
+      <span id="import-file-text">📁 点击选择 JSON 文件</span>
+    </div>
+    <div id="import-preview" style="display:none">
+      <div class="import-stats" id="import-stats"></div>
+      <div class="import-preview-list" id="import-preview-list"></div>
+    </div>
+    <div class="import-actions">
+      <button class="import-btn-cancel" id="import-cancel">取消</button>
+      <button class="import-btn-go" id="import-go" disabled>导入</button>
     </div>
   </div>
 </div>
@@ -664,6 +727,7 @@
   let testMode = false;
   const revealedCards = new Set();
   let manualDailyIdx = null;
+  let firstRender = true;
 
   /* ── Firebase ── */
   wordsRef.on('value', snap => {
@@ -672,6 +736,7 @@
     renderFilters();
     renderCards();
     renderDailyWord();
+    firstRender = false;
   });
 
   function renderStats() {
@@ -732,7 +797,7 @@
     grid.innerHTML = '';
     filtered.forEach(([id, d], i) => {
       const card = buildCard(id, d);
-      card.style.animationDelay = Math.min(i * 30, 200) + 'ms';
+      if (firstRender) card.style.animationDelay = Math.min(i * 30, 200) + 'ms';
       grid.appendChild(card);
       if (saved[id]) restoreCard(card, saved[id]);
       if (revealedCards.has(id)) card.classList.add('revealed');
@@ -1008,6 +1073,79 @@
       .then(() => { closeConfirm(); toast('已删除 ✓'); })
       .catch(() => toast('删除失败，请检查网络'))
       .finally(() => { btn.disabled = false; btn.textContent = '确认删除'; });
+  };
+
+  /* ── Import ── */
+  let importWords = [];
+
+  document.getElementById('btn-import').onclick = () => {
+    importWords = [];
+    document.getElementById('import-file-input').value = '';
+    document.getElementById('import-file-text').textContent = '📁 点击选择 JSON 文件';
+    document.getElementById('import-preview').style.display = 'none';
+    document.getElementById('import-go').disabled = true;
+    document.getElementById('import-go').textContent = '导入';
+    document.getElementById('import-overlay').style.display = 'flex';
+  };
+
+  document.getElementById('import-cancel').onclick = () => {
+    document.getElementById('import-overlay').style.display = 'none';
+  };
+
+  document.getElementById('import-file-zone').onclick = () => {
+    document.getElementById('import-file-input').click();
+  };
+
+  document.getElementById('import-file-input').onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    document.getElementById('import-file-text').textContent = '⏳ ' + file.name;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const raw = JSON.parse(ev.target.result);
+        const entries = Array.isArray(raw) ? raw : (raw.words || raw.data || Object.values(raw));
+        const studied = entries.filter(w => w.word && (w.repetitions || 0) > 0);
+        const existingWords = new Set(Object.values(allWords).map(d => (d.word || '').toLowerCase()));
+        importWords = studied.filter(w => !existingWords.has(w.word.toLowerCase()));
+        const dupCount = studied.length - importWords.length;
+
+        document.getElementById('import-stats').textContent =
+          `共 ${entries.length} 条 → 已复习 ${studied.length} 个 → 新词 ${importWords.length} 个（跳过重复 ${dupCount} 个）`;
+
+        const list = document.getElementById('import-preview-list');
+        list.innerHTML = importWords.slice(0, 20).map(w =>
+          `<div class="import-word-row"><span class="iw-word">${esc(w.word)}</span><span class="iw-def">${esc(w.meaning || w.definition || '')}</span></div>`
+        ).join('') + (importWords.length > 20 ? `<div class="import-more">…还有 ${importWords.length - 20} 个</div>` : '');
+
+        document.getElementById('import-preview').style.display = '';
+        document.getElementById('import-go').disabled = importWords.length === 0;
+        document.getElementById('import-file-text').textContent = '✅ ' + file.name;
+      } catch {
+        document.getElementById('import-file-text').textContent = '❌ 解析失败，请检查文件格式';
+      }
+    };
+    reader.readAsText(file, 'utf-8');
+  };
+
+  document.getElementById('import-go').onclick = async () => {
+    const btn = document.getElementById('import-go');
+    btn.disabled = true;
+    const nick = getNick();
+    const ts = Date.now();
+    let count = 0;
+    for (const w of importWords) {
+      btn.textContent = `导入中 ${++count}/${importWords.length}…`;
+      await db.ref('words').push({
+        word: w.word,
+        definition: w.meaning || w.definition || '',
+        tag: '雅思',
+        addedBy: nick,
+        timestamp: ts + count
+      });
+    }
+    document.getElementById('import-overlay').style.display = 'none';
+    toast(`已导入 ${count} 个单词 ✓`);
   };
 
   /* ── PDF Export ── */
